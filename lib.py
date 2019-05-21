@@ -1,27 +1,43 @@
 from PIL import ImageDraw, Image, ImageOps
 import random
-
-def draw_line(k, offset, width, draw, w=512):
-    for x in range(w):
-        p1 = (-10, offset)
-        p2 = (w+10, offset+k)
-        draw.line([p1, p2], (0, 0, 0), width)
-
-def draw_pattern(draw, w=512):
-    count = random.randint(5, 20)
-    k = random.randint(-w, w)
-    width = random.randint(20, 70)
-    for i in range(count):
-        offset = i*w/count*2
-        draw_line(k, offset, width, draw, w)
+import math
 
 
-def generate_pattern_set(path, count= 50, w=512):
-    for i in range(count):
+def draw_line(ang, offset, width, draw, w=256):
+    base = {
+        'x': w/2,
+        'y': w/2
+    }
+    d = ang/180*math.pi
+    r = w
+
+    x1 = math.cos(d - math.pi * offset) * r + base['x']
+    y1 = math.sin(d - math.pi * offset) * r + base['y']
+
+    x2 = math.cos(d + math.pi + math.pi * offset) * r + base['x']
+    y2 = math.sin(d + math.pi + math.pi * offset) * r + base['y']
+
+    p1 = (x1, y1)
+    p2 = (x2, y2)
+
+    draw.line([p1, p2], (0, 0, 0), width)
+
+
+def draw_pattern(draw, ang, width=5, w=256):
+    count = round(w/width)
+    for i in range(round(-count/2), round(count/2)):
+        draw_line(ang, i*width/w/1.5, width, draw, w)
+
+
+def generate_pattern_set(path, width, count= 6, w=256):
+    step = 360/count
+
+    for i in range(round(-count/2), round(count/2)):
+        ang = i*step
         temp_image = Image.open(path)
         draw = ImageDraw.Draw(temp_image)
-        draw_pattern(draw)
-        temp_image.save("patterns/img_%s.jpg" % i)
+        draw_pattern(draw, ang, width, w)
+        temp_image.save("patterns/img_%s.jpg" % ang)
 
 def blured_image(path):
     image = Image.open(path)
