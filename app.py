@@ -5,7 +5,5 @@ import numpy as np
 from PIL import ImageDraw, Image, ImageOps
 
 
-lib.generate_pattern_set("city.jpg", width=10, count=3, w=512, fftmult=300)
-'''
-Влияние малого количества пикселей на спектр изображения - Волков
-'''
+#lib.generate_pattern_set("city64.jpg", width=3, count=12, w=64, fftmult=10)
+lib.crop_image('city.jpg', 2, 512)

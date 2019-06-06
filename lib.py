@@ -86,6 +86,7 @@ def generate_fft(name, mult):
         result_array[...] = fft(channels[0]) * mult
 
     result_image = Image.fromarray(result_array)
+    result_array:print()
     result_image.save('ff/ff_%s' % name.split('/')[1])
 
 
@@ -94,6 +95,15 @@ def fft(channel):
     fft *= 255.0 / fft.max()  # proper scaling into 0..255 range
     return np.absolute(fft)
 
+def crop_image(name, w, width):
+    clear_dir('parts')
+    frame_size = width//w
+    input_image = Image.open(name)
+    for i in range(w):
+        for j in range(w):
+            mask = (i*frame_size, j*frame_size, i*frame_size+frame_size, j*frame_size+frame_size)
+            cropped = input_image.crop(mask)
+            cropped.save('parts/part_%sx%s.jpg' % (i, j))
 
 
 def clear_dir(folder):
